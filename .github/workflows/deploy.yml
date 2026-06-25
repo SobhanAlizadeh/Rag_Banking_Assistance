@@ -1,26 +1,75 @@
-name: Deploy to K8s
+name: Deploy to Kubernetes
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'  # با پوش تگ‌های نسخه‌ای مثل v1.0.0 فعال می‌شود
+  workflow_dispatch:  # امکان اجرای دستی از طریق GitHub UI
+
+env:
+  REGISTRY: ghcr.io  # یا docker.io (Docker Hub)
+  IMAGE_NAME: ${{ github.repository }}
+  KUBE_NAMESPACE: default
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      - name: Build and push Docker images
-        run: |
-          docker build -t rag-api:${{ github.ref_name }} -f docker/Dockerfile .
-          docker tag rag-api:${{ github.ref_name }} your-registry/rag-api:${{ github.ref_name }}
-          docker push your-registry/rag-api:${{ github.ref_name }}
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Deploy to Kubernetes
-        uses: actions-hub/kubectl@master
+      # 1. دریافت کد
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # 2. لاگین به رجیستری (GitHub Container Registry)
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          args: apply -f k8s/
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      # 3. ساخت و پوش ایمیج
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.api  # مسیر Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      # 4. تنظیم kubectl
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+      
+      # 5. تنظیم kubeconfig
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+        shell: bash
+      
+      # 6. استقرار روی Kubernetes
+      - name: Deploy to Kubernetes
+        run: |
+          # جایگزینی تگ ایمیج در فایل‌های K8s
+          sed -i "s|image: .*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}|g" k8s/deployment.yaml
+          
+          # اعمال مانیفست‌ها
+          kubectl apply -f k8s/ --namespace ${{ env.KUBE_NAMESPACE }}
+          
+          # بررسی وضعیت استقرار
+          kubectl rollout status deployment/rag-api -n ${{ env.KUBE_NAMESPACE }} --timeout=5m
+      
+      # 7. (اختیاری) ارسال نوتیفیکیشن به تلگرام/اسلک
+      - name: Send success notification
+        if: success()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"text": "✅ Deploy ${{ github.ref_name }} succeeded!"}' \
+            ${{ secrets.WEBHOOK_URL }} || true
