@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+.env/
+.envv
+chroma_db/
+logs/
+*.log
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Monitoring
+prometheus_data/
+grafana_data/
+
+# ChromaDB
+chromadb/**
+
+#Model
+app/model/**
+
+#data
+data/

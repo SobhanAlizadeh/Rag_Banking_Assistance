@@ -1,0 +1,26 @@
+name: Deploy to K8s
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and push Docker images
+        run: |
+          docker build -t rag-api:${{ github.ref_name }} -f docker/Dockerfile .
+          docker tag rag-api:${{ github.ref_name }} your-registry/rag-api:${{ github.ref_name }}
+          docker push your-registry/rag-api:${{ github.ref_name }}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Deploy to Kubernetes
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f k8s/
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}

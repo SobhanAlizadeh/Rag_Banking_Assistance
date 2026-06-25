@@ -1,0 +1,12 @@
+# ── API Keys ──
+OPENROUTER_API_KEY=your-openrouter-api-key
+SECRET_KEY=your-secret-key-for-jwt
+
+# ── Database ──
+CHROMA_PERSIST_DIR=./chroma_db
+
+# ── Logging ──
+LOG_LEVEL=INFO
+
+# ── Monitoring ──
+PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus

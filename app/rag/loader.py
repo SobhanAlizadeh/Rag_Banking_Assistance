@@ -1,0 +1,10 @@
+#load pdf with pypdf and return as variable string
+from pypdf import PdfReader
+def load_pdf(file_path):
+    pdf = PdfReader(file_path)
+    text = ""
+    for page in pdf.pages:
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text
+    return text
