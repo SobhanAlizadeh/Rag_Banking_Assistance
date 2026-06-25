@@ -37,4 +37,4 @@ chromadb/**
 app/model/**
 
 #data
-data/
+data/pdf/**
