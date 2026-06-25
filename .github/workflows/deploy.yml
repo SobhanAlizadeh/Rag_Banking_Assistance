@@ -67,10 +67,4 @@ jobs:
           # بررسی وضعیت استقرار
           kubectl rollout status deployment/rag-api -n ${{ env.KUBE_NAMESPACE }} --timeout=5m
       
-      # 7. (اختیاری) ارسال نوتیفیکیشن به تلگرام/اسلک
-      - name: Send success notification
-        if: success()
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"text": "✅ Deploy ${{ github.ref_name }} succeeded!"}' \
-            ${{ secrets.WEBHOOK_URL }} || true
+      

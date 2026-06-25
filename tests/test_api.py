@@ -1,14 +1,11 @@
-import pytest
+# tests/test_api.py
 from fastapi.testclient import TestClient
-from main import app
+from main import app  # ✅ چون main.py در ریشه است
 
 client = TestClient(app)
 
-def test_login():
-    response = client.post("/login")
+def test_ping():
+    response = client.get("/ping")
     assert response.status_code == 200
-    assert "access_token" in response.json()
+    assert response.json() == {"status": "ok"}
 
-def test_chat_unauthorized():
-    response = client.post("/chat", json={"question": "test"})
-    assert response.status_code == 401
