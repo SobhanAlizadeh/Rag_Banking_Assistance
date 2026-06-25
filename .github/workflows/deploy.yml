@@ -10,6 +10,7 @@ env:
   REGISTRY: ghcr.io  # یا docker.io (Docker Hub)
   IMAGE_NAME: ${{ github.repository }}
   KUBE_NAMESPACE: default
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-deploy:
