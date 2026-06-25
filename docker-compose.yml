@@ -2,7 +2,10 @@ services:
 
   rag-api:
 
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    image: ghcr.io/sobhan2alizadeh/rag-api:latest
 
     container_name: rag-api
 

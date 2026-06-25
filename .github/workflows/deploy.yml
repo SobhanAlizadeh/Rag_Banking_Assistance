@@ -2,60 +2,95 @@ name: Deploy to Kubernetes
 
 on:
   push:
+    branches: [ main ]
     tags:
-      - 'v*'  # با پوش تگ‌های نسخه‌ای مثل v1.0.0 فعال می‌شود
-  workflow_dispatch:  # امکان اجرای دستی از طریق GitHub UI
+      - 'v*'
+  workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io  # یا docker.io (Docker Hub)
+  REGISTRY: ghcr.io  # یا docker.io برای Docker Hub
   IMAGE_NAME: ${{ github.repository }}
   KUBE_NAMESPACE: default
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build-and-deploy:
+  # ==============================================
+  # JOB 1: ساخت و انتشار ایمیج Docker
+  # ==============================================
+  build-and-push:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+      packages: write  # برای push به GitHub Container Registry
+
     steps:
-      # 1. دریافت کد
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      # 2. لاگین به رجیستری (GitHub Container Registry)
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
-      # 3. ساخت و پوش ایمیج
+
+      # اگر از Docker Hub استفاده می‌کنید:
+      # - name: Log in to Docker Hub
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/Dockerfile.api  # مسیر Dockerfile
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      # 4. تنظیم kubectl
+          platforms: linux/amd64,linux/arm64  # (اختیاری) ساخت برای چند معماری
+
+  # ==============================================
+  # JOB 2: استقرار روی Kubernetes
+  # ==============================================
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push  # صبر می‌کند تا ایمیج ساخته شود
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
         with:
           version: 'latest'
-      
-      # 5. تنظیم kubeconfig
+
       - name: Set up kubeconfig
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
         shell: bash
-      
-      # 6. استقرار روی Kubernetes
+
       - name: Deploy to Kubernetes
         run: |
           # جایگزینی تگ ایمیج در فایل‌های K8s
@@ -66,5 +101,3 @@ jobs:
           
           # بررسی وضعیت استقرار
           kubectl rollout status deployment/rag-api -n ${{ env.KUBE_NAMESPACE }} --timeout=5m
-      
-      
