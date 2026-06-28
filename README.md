@@ -1,253 +1,660 @@
-<div align="center">
+<!-- ===================================================== -->
+<!-- HEADER -->
+<!-- ===================================================== -->
 
-<!-- BANNER -->
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=200&section=header&text=RAG%20Banking%20Assistant&fontSize=48&fontColor=ffffff&fontAlignY=38&desc=Retrieval-Augmented%20Generation%20%E2%80%A2%20FastAPI%20%E2%80%A2%20ChromaDB%20%E2%80%A2%20MLflow&descAlignY=62&descSize=16&descColor=a78bfa" />
+<p align="center">
+  <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=220&section=header&text=RAG%20Banking%20Assistant&fontSize=48&fontColor=ffffff&fontAlignY=38&desc=Retrieval-Augmented%20Generation%20•%20FastAPI%20•%20ChromaDB%20•%20MLflow&descAlignY=62&descSize=16&descColor=a78bfa"/>
+</p>
 
-<br/>
+<h1 align="center">
+🏦 RAG Banking Assistant
+</h1>
 
-<!-- BADGES -->
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20Store-7C3AED?style=for-the-badge&logo=databricks&logoColor=white)](https://trychroma.com)
-[![MLflow](https://img.shields.io/badge/MLflow-Tracking-0194E2?style=for-the-badge&logo=mlflow&logoColor=white)](https://mlflow.org)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
-[![License](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](LICENSE)
+<p align="center">
+Production-ready Retrieval-Augmented Generation (RAG) system for banking documents powered by FastAPI, ChromaDB, MLflow and Docker.
+</p>
 
-<br/>
+<p align="center">
 
-> **🏦 An intelligent, production-ready RAG pipeline tailored for banking Q&A —**
-> **semantic search over your documents, served through a secure API, tracked with MLflow.**
+<a href="https://python.org">
+<img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+</a>
 
-</div>
+<a href="https://fastapi.tiangolo.com">
+<img src="https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+</a>
 
----
+<a href="https://streamlit.io">
+<img src="https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
+</a>
 
-## 🧠 Architecture Overview
+<a href="https://trychroma.com">
+<img src="https://img.shields.io/badge/ChromaDB-Vector%20Store-7C3AED?style=for-the-badge"/>
+</a>
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      USER / CLIENT                          │
-│              Streamlit UI  ·  REST API                      │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-             ┌─────────────▼─────────────┐
-             │        FastAPI Backend     │
-             │   Auth  ·  Routes  ·  RAG  │
-             └──────┬───────────┬─────────┘
-                    │           │
-         ┌──────────▼──┐  ┌────▼──────────┐
-         │  ChromaDB   │  │  LLM / Model  │
-         │ Vector Store│  │   Service     │
-         └─────────────┘  └───────────────┘
-                    │
-         ┌──────────▼──────────┐
-         │  MLflow Experiment  │
-         │      Tracking       │
-         └─────────────────────┘
-```
+<a href="https://mlflow.org">
+<img src="https://img.shields.io/badge/MLflow-Tracking-0194E2?style=for-the-badge&logo=mlflow&logoColor=white"/>
+</a>
+
+<a href="https://docker.com">
+<img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+</a>
+
+<img src="https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge"/>
+
+</p>
 
 ---
 
-## ✨ Key Features
+## 📌 Overview
+
+**RAG Banking Assistant** is a production-ready Retrieval-Augmented Generation system designed for banking knowledge bases.
+
+Instead of relying solely on an LLM, the assistant retrieves relevant banking documents from a vector database before generating answers, ensuring higher accuracy, transparency, and grounded responses.
+
+---
+
+## ✨ Features
 
 | Feature | Description |
-|---|---|
-| 🔐 **Secure Auth** | JWT-based authentication on all API endpoints |
-| 📄 **Smart PDF Ingestion** | Intelligent chunking and preprocessing of banking documents |
-| 🔍 **Semantic Search** | ChromaDB-powered vector similarity search over your knowledge base |
-| 🤖 **RAG Pipeline** | Context-aware answer generation grounded in retrieved documents |
-| 📊 **MLflow Tracking** | Full experiment and run tracking for model evaluation |
-| 🖥️ **Streamlit UI** | Lightweight chat interface for local demos and testing |
-| 🐳 **Docker Ready** | One-command deployment with Docker Compose |
+|----------|-------------|
+| 🔐 JWT Authentication | Secure API endpoints |
+| 📄 PDF Ingestion | Automatic chunking & preprocessing |
+| 🔍 Semantic Search | Vector similarity search with ChromaDB |
+| 🤖 RAG Pipeline | Context-aware response generation |
+| 📊 MLflow | Experiment tracking |
+| 🖥 Streamlit | Interactive chat UI |
+| 🐳 Docker | One-command deployment |
+| 📈 Monitoring | Prometheus & Grafana |
+| ⚡ Redis Cache | Faster retrieval |
+| 📝 Logging | Structured logs |
+
+
 
 ---
 
-## 📁 Project Structure
+# 📂 Project Structure
 
-```
+```text
 rag-banking-assistant/
 │
-├── 📂 app/                    # Core application logic
-│   ├── 📂 api/
-│   │   ├── routes.py          # API endpoints
-│   │   └── auth.py            # Authentication
-│   ├── 📂 core/               # Logging & configuration
-│   ├── 📂 rag/                # RAG engine: search, index, load
-│   ├── 📂 model/              # Model files & weights
-│   └── main.py                # FastAPI entrypoint
+├── app/
+│   ├── api/
+│   │   ├── auth.py
+│   │   └── routes.py
+│   │
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── logger.py
+│   │   └── security.py
+│   │
+│   ├── rag/
+│   │   ├── ingest.py
+│   │   ├── embeddings.py
+│   │   ├── retriever.py
+│   │   ├── pipeline.py
+│   │   └── generator.py
+│   │
+│   ├── models/
+│   │
+│   └── main.py
 │
-├── 📂 streamlit/
-│   └── chat_app.py            # Local chat UI
-│
-├── 📂 chromadb/               # Persistent vector database
-├── 📂 scripts/
-│   └── ingest.py              # Document ingestion script
-├── 📂 tests/                  # Unit & API tests
-├── 📂 monitoring/             # Prometheus / Grafana configs
+├── chromadb/
+├── streamlit/
+├── scripts/
+├── monitoring/
+├── tests/
 ├── docker-compose.yml
+├── Dockerfile
 ├── requirements.txt
-└── .envv.example
+├── .env.example
+└── README.md
 ```
 
 ---
 
-## 🚀 Quick Start
+# 🚀 Quick Start
 
-### Prerequisites
-
-- **Python 3.10+**
-- **Docker & Docker Compose** *(for containerized runs)*
-
----
-
-### 1 · Clone & Set Up Environment
+## Clone Repository
 
 ```bash
 git clone https://github.com/SobhanAlizadeh/rag-banking-assistant.git
+
 cd rag-banking-assistant
+```
 
+## Create Virtual Environment
+
+```bash
 python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+```
 
+Linux / macOS
+
+```bash
+source .venv/bin/activate
+```
+
+Windows
+
+```powershell
+.venv\Scripts\activate
+```
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2 · Configure Environment Variables
+## Configure Environment
 
 ```bash
-cp .envv.example .envv
-# Edit .envv and fill in your API keys, model paths, and service addresses
+cp .env.example .env
 ```
 
-### 3 · Ingest Documents
+Edit the environment variables before running the application.
+
+---
+
+# 📥 Document Ingestion
+
+Before using the assistant, your banking documents must be indexed into ChromaDB.
 
 ```bash
-# Make sure chromadb/ directory is writable
 python scripts/ingest.py
 ```
 
-### 4 · Run the Services
+The ingestion pipeline performs:
 
-<table>
-<tr>
-<td><b>API only (local)</b></td>
-<td>
+- 📄 PDF loading
+- ✂️ Smart text chunking
+- 🧠 Embedding generation
+- 🗂 Vector indexing into ChromaDB
+- 💾 Persistent storage
+
+---
+
+# ▶️ Running the Application
+
+## Start FastAPI
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --reload
 ```
 
-</td>
-</tr>
-<tr>
-<td><b>Streamlit UI</b></td>
-<td>
+Application:
+
+```
+http://localhost:8000
+```
+
+Swagger UI:
+
+```
+http://localhost:8000/docs
+```
+
+ReDoc:
+
+```
+http://localhost:8000/redoc
+```
+
+---
+
+## Start Streamlit
 
 ```bash
 streamlit run streamlit/chat_app.py
 ```
 
-</td>
-</tr>
-<tr>
-<td><b>Full stack (Docker)</b></td>
-<td>
+Default URL
+
+```
+http://localhost:8501
+```
+
+---
+
+# 🐳 Docker Deployment
+
+Build all services
 
 ```bash
 docker compose up --build
 ```
 
-</td>
-</tr>
-</table>
+Run in background
+
+```bash
+docker compose up -d
+```
+
+Stop containers
+
+```bash
+docker compose down
+```
+
+Rebuild
+
+```bash
+docker compose up --build --force-recreate
+```
 
 ---
 
-## 📊 MLflow Experiment Tracking
+# 🧠 MLflow Tracking
+
+Start only MLflow
 
 ```bash
-# Start MLflow as a container
 docker compose up -d mlflow
 ```
 
-Open the MLflow UI at **`http://localhost:5000`** to view runs, metrics, and artifacts.
+Open
 
----
-
-## 🧪 Testing & Troubleshooting
-
-```bash
-pytest tests/
+```
+http://localhost:5000
 ```
 
-<details>
-<summary><b>⚠️ Common Issues</b></summary>
+Track:
 
-<br/>
+- Parameters
+- Metrics
+- Artifacts
+- Experiments
+- Models
 
-**ChromaDB is empty**
-> Run `python scripts/ingest.py` before starting the server. Ensure the `chromadb/` folder is accessible and writable.
+Example
 
-**Redis connection error**
-> Check your Redis service is running and that the host/port in `.envv` matches.
+```python
+import mlflow
 
-**Model files missing or too large**
-> Confirm files exist under `app/model/` and that you have sufficient disk space. Verify all paths in `.envv` are correct.
+with mlflow.start_run():
 
-</details>
+    mlflow.log_param("chunk_size",512)
 
----
-
-## 🛠️ Tech Stack
-
-<div align="center">
-
-![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-![Streamlit](https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
-![ChromaDB](https://img.shields.io/badge/-ChromaDB-7C3AED?style=flat-square&logo=databricks&logoColor=white)
-![MLflow](https://img.shields.io/badge/-MLflow-0194E2?style=flat-square&logo=mlflow&logoColor=white)
-![Docker](https://img.shields.io/badge/-Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
-![Redis](https://img.shields.io/badge/-Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
-![Prometheus](https://img.shields.io/badge/-Prometheus-E6522C?style=flat-square&logo=prometheus&logoColor=white)
-![Grafana](https://img.shields.io/badge/-Grafana-F46800?style=flat-square&logo=grafana&logoColor=white)
-
-</div>
+    mlflow.log_metric("accuracy",0.94)
+```
 
 ---
 
-## 🤝 Contributing
+# ⚡ Redis Cache
 
-PRs are welcome! Please follow these steps:
+Redis is used for:
 
-1. **Open an issue** describing the feature or bug
-2. **Branch off** `main` with a descriptive name
-3. **Add tests** and update documentation
-4. **Submit a PR** — we'll review it promptly
+- Session cache
+- Prompt cache
+- Response cache
+- Query history
+- Rate limiting
 
----
+Run
 
-## 👨‍💻 Author
+```bash
+docker compose up -d redis
+```
 
-<div align="center">
+Verify
 
-<img src="https://github.com/SobhanAlizadeh.png" width="96" style="border-radius:50%" alt="Sobhan Alizadeh"/>
-
-**Sobhan Alizadeh**
-*AI Engineer · Builder of intelligent systems*
-
-[![GitHub](https://img.shields.io/badge/GitHub-SobhanAlizadeh-181717?style=for-the-badge&logo=github)](https://github.com/SobhanAlizadeh)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-sobhan--alizadeh-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/sobhan-alizadeh/)
-
-</div>
+```bash
+docker ps
+```
 
 ---
 
-<div align="center">
+# 📈 Monitoring
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:24243e,50:302b63,100:0f0c29&height=100&section=footer" />
+Monitoring stack includes
 
-*Built with ❤️ for the AI Engineering community*
+- Prometheus
+- Grafana
 
-</div>
+Start
+
+```bash
+docker compose up -d prometheus grafana
+```
+
+Access
+
+Prometheus
+
+```
+http://localhost:9090
+```
+
+Grafana
+
+```
+http://localhost:3000
+```
+
+Default credentials
+
+```
+admin
+admin
+```
+
+---
+
+# 🔐 Authentication
+
+Every protected endpoint requires a JWT token.
+
+Example
+
+```
+Authorization:
+Bearer YOUR_ACCESS_TOKEN
+```
+
+---
+
+# 📡 API Endpoints
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /login | User authentication |
+| POST | /register | Create user |
+| POST | /ask | Ask questions |
+| POST | /ingest | Upload new documents |
+| GET | /health | Health check |
+| GET | /metrics | Prometheus metrics |
+
+---
+
+# ⚙️ Environment Variables
+
+Example
+
+```env
+APP_NAME=RAG Banking Assistant
+
+DEBUG=True
+
+SECRET_KEY=YOUR_SECRET_KEY
+
+JWT_EXPIRE_MINUTES=60
+
+OPENAI_API_KEY=YOUR_KEY
+
+MODEL_NAME=gpt-4o-mini
+
+CHROMA_DB=chromadb
+
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+
+REDIS_HOST=redis
+
+REDIS_PORT=6379
+
+MLFLOW_TRACKING_URI=http://mlflow:5000
+```
+
+---
+
+# 🧪 Running Tests
+
+Execute all tests
+
+```bash
+pytest
+```
+
+Verbose
+
+```bash
+pytest -v
+```
+
+Coverage
+
+```bash
+pytest --cov=app
+```
+
+Generate HTML report
+
+```bash
+pytest --cov=app --cov-report=html
+```
+
+---
+
+# 📊 Example Request
+
+```bash
+curl -X POST http://localhost:8000/ask \
+-H "Authorization: Bearer YOUR_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{
+    "question":"What is the minimum balance for a savings account?"
+}'
+```
+
+---
+
+# 📦 Docker Services
+
+| Service | Port |
+|----------|------|
+| FastAPI | 8000 |
+| Streamlit | 8501 |
+| MLflow | 5000 |
+| Redis | 6379 |
+| Prometheus | 9090 |
+| Grafana | 3000 |
+
+---
+
+# 🧰 Tech Stack
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/ChromaDB-7C3AED?style=for-the-badge"/>
+
+<img src="https://img.shields.io/badge/LangChain-121212?style=for-the-badge"/>
+
+<img src="https://img.shields.io/badge/MLflow-0194E2?style=for-the-badge&logo=mlflow&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white"/>
+
+</p>
+
+---
+
+# ⚠️ Troubleshooting
+
+### ChromaDB is empty
+
+```bash
+python scripts/ingest.py
+```
+
+---
+
+### Redis connection failed
+
+Check
+
+```bash
+docker ps
+```
+
+Verify Redis is running.
+
+---
+
+### MLflow unavailable
+
+Run
+
+```bash
+docker compose up -d mlflow
+```
+
+---
+
+### API returns 401
+
+Your JWT token has expired.
+
+Authenticate again.
+
+---
+
+### Docker build failed
+
+Rebuild
+
+```bash
+docker compose build --no-cache
+```
+
+---
+
+# 📊 GitHub Stats
+
+<p align="center">
+
+<img src="https://github-readme-stats.vercel.app/api?username=SobhanAlizadeh&show_icons=true&theme=tokyonight" height="160"/>
+
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=SobhanAlizadeh&theme=tokyonight" height="160"/>
+
+</p>
+
+<p align="center">
+
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=SobhanAlizadeh&layout=compact&theme=tokyonight"/>
+
+</p>
+
+---
+
+# 🗺️ Roadmap
+
+- [x] RAG pipeline with ChromaDB
+- [x] FastAPI backend
+- [x] Streamlit UI
+- [x] JWT Authentication
+- [x] Docker support
+- [x] MLflow tracking
+- [x] Redis caching
+- [x] Kubernetes deployment
+- [ ] Multi-LLM support (OpenAI, Claude, Local LLMs)
+- [ ] Role-based access control (RBAC)
+- [ ] Multi-language answers (FA / EN / AR)
+- [ ] Advanced reranking model
+
+
+---
+
+# 🤝 Contributing
+
+We welcome contributions!
+
+### Steps
+
+```bash
+# 1. Fork the repo
+# 2. Clone your fork
+git clone https://github.com/SobhanAlizadeh/rag-banking-assistant.git
+
+# 3. Create a branch
+git checkout -b feature/new-feature
+
+# 4. Commit changes
+git commit -m "Add new feature"
+
+# 5. Push
+git push origin feature/new-feature
+```
+
+Then open a Pull Request 🚀
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+```
+MIT License © 2026 Sobhan Alizadeh
+```
+
+---
+
+# 👨‍💻 Author
+
+<p align="center">
+
+<img src="https://github.com/SobhanAlizadeh.png" width="120" style="border-radius:50%"/>
+
+</p>
+
+<h2 align="center">Sobhan Alizadeh</h2>
+
+<p align="center">
+AI Engineer · Builder of Intelligent Systems · RAG & LLM Enthusiast
+</p>
+
+<p align="center">
+
+<a href="https://github.com/SobhanAlizadeh">
+<img src="https://img.shields.io/badge/GitHub-SobhanAlizadeh-181717?style=for-the-badge&logo=github"/>
+</a>
+
+<a href="https://linkedin.com/in/sobhan-alizadeh">
+<img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge&logo=linkedin"/>
+</a>
+
+</p>
+
+---
+
+# 🚀 Future Improvements
+
+- Vector DB migration to Weaviate / Pinecone
+- GPU-accelerated embeddings
+- Streaming responses (SSE / WebSocket)
+- Fine-tuned banking LLM
+- Document OCR support
+- Audit logging system
+- Enterprise RBAC + SSO
+
+---
+
+# 🙏 Acknowledgements
+
+Special thanks to:
+
+- OpenAI for LLM APIs
+- FastAPI team
+- ChromaDB team
+- MLflow project
+- Open-source community ❤️
+
+
+
+
+
+<p align="center">
+
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:24243e,50:302b63,100:0f0c29&height=120&section=footer&text=Built%20with%20Passion%20🚀&fontSize=24&fontColor=ffffff"/>
+
