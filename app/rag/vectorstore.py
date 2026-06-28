@@ -1,6 +1,6 @@
 import chromadb
 from app.rag.embedding import get_embedding
-from app.rag.generator import generate_answer
+from app.llm.generator import generate_answer
 
 client = chromadb.PersistentClient(path="./chromadb")
 collection = client.get_or_create_collection("bank_rag")

@@ -60,3 +60,20 @@ services:
       - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
+  redis:
+
+    image: redis:7-alpine
+
+    container_name: rag-redis
+
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+volumes:
+
+  redis_data:

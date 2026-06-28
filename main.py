@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.security import HTTPBearer
 from app.api.auth import router as auth_router      # ✅ مسیر درست
-from api.routes import router as chat_router    # ✅ مسیر درست
+from app.api.routes import router as chat_router    # ✅ مسیر درست
 from prometheus_fastapi_instrumentator import Instrumentator
 
 security_scheme = HTTPBearer()
