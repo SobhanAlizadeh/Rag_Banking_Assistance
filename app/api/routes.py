@@ -6,6 +6,8 @@ from app.services.chat_service import chat_service
 from app.api.deps import get_current_user
 from app.cache.redis_client import get_cache_stats, clear_session_cache, redis_client
 # from app.services.monitoring_service import monitoring
+from app.memory.conversation import load_history
+
 import json
 import pandas as pd
 
@@ -263,21 +265,20 @@ async def debug_prompt(
     from app.rag.pipeline import pipeline
     
     # دریافت تاریخچه و اسناد
-    history = pipeline._get_history(session_id)
-    documents = pipeline._get_documents(question)
+    history = load_history(session_id)
     
     # ساخت پرامپت
     from app.llm.prompt_builder import build_prompt
     prompt = build_prompt(
         question=question,
-        documents=documents,
+        documents=[],
         history=history,
         system_prompt=pipeline.system_prompt
     )
     
     return {
         "prompt": prompt,
-        "num_documents": len(documents),
+        "num_documents": len([]),
         "history_length": len(history)
     }
 

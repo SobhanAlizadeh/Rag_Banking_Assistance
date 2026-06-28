@@ -1,11 +1,14 @@
 # app/rag/pipeline.py
-from typing import Dict, Any
+import logging
+from typing import Dict, Any, List
 from app.memory.conversation import load_history, append_message
 from app.rag.retriever import retrieve_documents
 from app.llm.prompt_builder import build_prompt, SYSTEM_PROMPT  # ← import SYSTEM_PROMPT
 from app.llm.generator import generate_answer
 from app.cache.redis_client import get_cached_answer, set_cached_answer
 import time
+
+logger = logging.getLogger(__name__)
 
 class RAGPipeline:
     """
@@ -67,6 +70,17 @@ class RAGPipeline:
             "from_cache": False,
             "processing_time": time.time() - start_time
         }
+    def _get_history(self, session_id: str) -> List[Dict[str, str]]:
+        """دریافت تاریخچه مکالمه"""
+        try:
+            history = load_history(session_id)
+            return history
+        except Exception as e:
+            logger.warning(f"Could not load history: {e}")
+            return []
+    def get_session_history(self, session_id: str) -> List[Dict[str, str]]:
+        """دریافت تاریخچه کامل برای نمایش (عمومی)"""
+        return self._get_history(session_id)
 
 # نمونه سراسری Pipeline
 pipeline = RAGPipeline()
