@@ -15,7 +15,18 @@ app = FastAPI(
     }
 )
 
-Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+instrumentator = Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True,
+    should_respect_env_var=True,
+    should_instrument_requests_inprogress=True,
+    excluded_handlers=[".*admin.*", "/metrics"],
+    inprogress_name="http_requests_inprogress",
+    inprogress_labels=True,
+)
+
+# instrument کردن اپ
+instrumentator.instrument(app).expose(app, endpoint="/metrics")
 
 app.include_router(auth_router)
 app.include_router(chat_router)

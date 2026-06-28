@@ -10,3 +10,5 @@ LOG_LEVEL=INFO
 
 # ── Monitoring ──
 PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
+
+MLFLOW_ENABLED=True
